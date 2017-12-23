@@ -1,6 +1,6 @@
 (function() {
     var parse = function(data) {
-        var output = '<table class="table"> <thead> <tr> <th>Product</th> <th>Price</th> <th>Shop</th> <th>Platform</th> </tr></thead> <tbody>';
+        var output = '<table class="table table-striped"> <thead> <tr> <th>Product</th> <th>Price</th> <th>Shop</th> <th>Platform</th> </tr></thead> <tbody>';
 
         for(var i in data) {
             output += '<tr> <td>'+data[i].name+'</td><td>'+data[i].price+'</td><td>'+data[i].shop+'</td><td>'+data[i].platform+'</td></tr>';
@@ -17,6 +17,10 @@
 
         $.getJSON('/query?keyword=' + ky, function(obj){
             parse(obj.data);
+
+            if (obj.msg !== undefined) {
+                console.log(obj.msg);
+            }
         });
     };
 

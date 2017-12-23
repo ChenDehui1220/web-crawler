@@ -1,29 +1,24 @@
-const jsdom = require('jsdom');
-const Crawler = require('crawler');
-const express = require('express');
-const app = express();
-const striptags = require('striptags');
-const compression = require('compression');
-const Promise = require('promise');
-
-const {
-    JSDOM
-} = jsdom;
+const express = require('express')
+const app = express()
+const Crawler = require('crawler')
+const compression = require('compression')
+const Promise = require('promise')
+const crawlerParse = require('./lib/crawlerParse')
 
 //middleware
-app.use(compression());
+app.use(compression())
 
 //static
-app.use('/static', express.static(__dirname + '/public'));
+app.use('/static', express.static(__dirname + '/public'))
 
 const c = new Crawler({
     maxConnections: 10,
     userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
-});
+})
 
 app.get('/', function (request, response) {
     response.sendFile(__dirname + '/public/index.html');
-});
+})
 
 app.get('/query', function (request, response) {
     var obj = {}, nameAry = [], dataAry = [];
@@ -36,104 +31,48 @@ app.get('/query', function (request, response) {
     response.set('Cache-Control', 'public, no-store');
 
     if (typeof searchKeyword === 'string' && searchKeyword.length > 0) {
+        searchKeyword = encodeURI(searchKeyword)
+
         //feebee
         const feebee = new Promise((resolve, reject) => {
             c.queue([{
-                uri: 'http://m.feebee.com.tw/s/?q=' + encodeURI(searchKeyword),
+                uri: 'http://m.feebee.com.tw/s/?q=' + searchKeyword,
                 jQuery: false,
                 callback: function (error, res, done) {
                     if (error) {
-                        obj.msg = 'feebee not response!';
-                        reject();
+                        obj.msg = 'feebee not response!'
                     } else {
-                        const {
-                            document
-                        } = (new JSDOM(res.body)).window;
-                        var list = document.querySelector('#list_view');
-                        if (list === null) {
-                            resolve();
-                            return;
-                        }
-                        var li = list.querySelectorAll('.product_group');
-                        var productName = '',
-                            price = '',
-                            shop = '';
-                        for (var i in li) {
-                            if (typeof li[i] === 'object') {
-                                if (li[i].querySelector('h4')) {
-                                    productName = li[i].querySelector('h4').innerHTML;
-                                    price = (li[i].querySelector('.price')) ? li[i].querySelector('.price').innerHTML : '';
-
-                                    if (li[i].querySelector('.shop')) {
-                                        shop = li[i].querySelector('.shop').innerHTML;
-                                    }
-
-                                    if (nameAry.indexOf(productName) === -1) {
-                                        dataAry.push({
-                                            name: striptags(productName),
-                                            price: striptags(price),
-                                            shop: striptags(shop),
-                                            platform: 'feebee'
-                                        });
-                                        nameAry.push(productName);
-                                    }
-                                }
-                            }
+                        const { next, fail, keys, items } = crawlerParse('feebee', res)
+                        if (next === true) {
+                            dataAry = dataAry.concat(items)
+                        } else {
+                            obj.msg = 'feebee parse failed.'
                         }
                     }
-                    done();
-                    resolve();
+                    done()
+                    resolve()
                 }
-            }]);
-        });
+            }])
+        })
 
         //ezprice
         const ezprice = new Promise((resolve, reject) => {
             c.queue([{
-                uri: 'https://m.ezprice.com.tw/s/' + encodeURI(searchKeyword) + '/',
+                uri: 'https://m.ezprice.com.tw/s/' + searchKeyword + '/',
                 jQuery: false,
                 callback: function (error, res, done) {
                     if (error) {
-                        obj.msg = 'feebee not response!';
-                        reject();
+                        obj.msg = 'ezprice not response!'
                     } else {
-                        const {
-                            document
-                        } = (new JSDOM(res.body)).window;
-                        var list = document.querySelector('.box-list');
-                        if (list === null) {
-                            resolve();
-                            return;
-                        }
-                        var li = list.querySelectorAll('.columns');
-                        var productName = '',
-                            price = '',
-                            shop = '';
-                        for (var i in li) {
-                            if (typeof li[i] === 'object') {
-                                if (li[i].querySelector('h4')) {
-                                    productName = li[i].querySelector('h4').innerHTML;
-                                    price = (li[i].querySelector('.price')) ? li[i].querySelector('.price').innerHTML : '';
-
-                                    if (li[i].querySelector('.shop-name')) {
-                                        shop = li[i].querySelector('.shop-name').innerHTML;
-                                    }
-
-                                    if (nameAry.indexOf(productName) === -1) {
-                                        dataAry.push({
-                                            name: striptags(productName),
-                                            price: striptags(price),
-                                            shop: striptags(shop),
-                                            platform: 'ezprice'
-                                        });
-                                        nameAry.push(productName);
-                                    }
-                                }
-                            }
+                        const { next, fail, keys, items } = crawlerParse('ezprice', res)
+                        if (next === true) {
+                            dataAry = dataAry.concat(items)
+                        } else {
+                            obj.msg = 'ezprice parse failed.'
                         }
                     }
-                    done();
-                    resolve();
+                    done()
+                    resolve()
                 }
             }]);
         });
@@ -155,8 +94,8 @@ app.get('/query', function (request, response) {
         obj.msg = 'please provide search word. ex: /query?keyword=dyson v6'
         response.status(400).send(JSON.stringify(obj));
     }
-});
+})
 
 app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
-});
+    console.log('Starting web crawler service!!!');
+})
