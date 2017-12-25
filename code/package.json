@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon ./app.js localhost 3000",
+    "build": "node ./app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
