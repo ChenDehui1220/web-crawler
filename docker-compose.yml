@@ -1,0 +1,8 @@
+web:
+  # image: registry.hiiir.com/f2emock
+  ports:
+    - "6000:3000"
+  volumes:
+   - ./code:/html
+  working_dir: /html
+  command: npm run start
