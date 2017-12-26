@@ -1,9 +1,9 @@
 web:
-  # image: registry.hiiir.com/f2ewebcrawler
-  image: node:6.11.5
+  image: registry.hiiir.com/f2ewebcrawler
+  #image: node:6.11.5
   ports:
     - "4080:3000"
-  volumes:
-   - ./code:/html
-  working_dir: /html
-  command: npm run start
+  #volumes:
+  # - ./code:/html
+  #working_dir: /html
+  #command: npm run start
