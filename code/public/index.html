@@ -10,6 +10,7 @@
     <link rel="icon" href="./static/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="./static/app.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </head>
 
 <body>
@@ -18,17 +19,31 @@
             <form>
                 <div class="form-group">
                     <label for="keyword"></label>
-                    <input type="text" class="form-control" id="keyword" aria-describedby="emailHelp" placeholder="請輸入預查商品名稱"  autocomplete="true">
+                    <input type="text" class="form-control" id="keyword" aria-describedby="emailHelp" placeholder="請輸入預查商品名稱" autocomplete="true">
                 </div>
-                <button type="submit" class="btn btn-primary">Search</button>
+
+                <p>
+                    <label for="amount">Price range:</label>
+                    <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+                </p>
+
+                <div id="slider-range"></div>
+
+                <br>
+                <p>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </p>
             </form>
         </div>
+
         <br>
+
         <div id="results"></div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
         crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"></script>
     <script src="./static/index.js"></script>
 </body>
 
