@@ -4,7 +4,7 @@
     var $Slider = $('#slider-range');
     var rangeMin = 0;
     var rangeMax = 50000;
-    var rangeTop = 100000;
+    var rangeTop = 120000;
 
     var parse = function() {
         var data = gData;

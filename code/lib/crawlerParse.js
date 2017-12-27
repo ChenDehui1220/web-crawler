@@ -24,12 +24,18 @@ function crawlerParse(platform, data) {
             container: '.box-list',
             items: '.columns',
             shop: '.shop-name'
+        },
+        findprice: {
+            container: '#divGrid',
+            items: 'li',
+            shop: '.mname'
         }
     }
     let list = null
     let lis = null
 
     list = document.querySelector(platDOM[platform].container)
+
     if (list === null) {
         obj.fail = true
 
@@ -37,12 +43,14 @@ function crawlerParse(platform, data) {
         lis = list.querySelectorAll(platDOM[platform].items);
         let productName = '',
             price = '',
-            shop = ''
+            shop = '',
+            h4
 
         for (var i in lis) {
             if (typeof lis[i] === 'object') {
-                if (lis[i].querySelector('h4')) {
-                    productName = lis[i].querySelector('h4').innerHTML;
+                h4 = (['feebee', 'ezprice'].indexOf(platform) !== -1) ? lis[i].querySelector('h4') : lis[i].querySelector('.gname')
+                if (h4) {
+                    productName = h4.innerHTML;
                     price = (lis[i].querySelector('.price')) ? lis[i].querySelector('.price').innerHTML : '';
 
                     if (lis[i].querySelector(platDOM[platform].shop)) {
@@ -52,11 +60,11 @@ function crawlerParse(platform, data) {
                     if (obj.keys.indexOf(productName) === -1) {
                         obj.items.push({
                             name: striptags(productName),
-                            price: striptags(price).replace(/(\$)/g,''),
+                            price: striptags(price).replace(/(\$|&nbsp;)/g,''),
                             shop: striptags(shop),
                             platform: platform
                         });
-                        obj.keys.push(productName);
+                        obj.keys.push(striptags(productName));
                     }
                 }
             }

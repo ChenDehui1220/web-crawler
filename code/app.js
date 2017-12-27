@@ -80,7 +80,29 @@ app.get('/query', function (request, response) {
             }]);
         });
 
-        Promise.all([feebee, ezprice]).then(() => {
+        //findprice
+        const findprice = new Promise((resolve, reject) => {
+            c.queue([{
+                uri: 'https://m.findprice.com.tw/datalist.aspx?q=' + searchKeyword,
+                jQuery: false,
+                callback: function (error, res, done) {
+                    if (error) {
+                        obj.msg = 'findprice not response!'
+                    } else {
+                        const { next, fail, keys, items } = crawlerParse('findprice', res)
+                        if (next === true) {
+                            dataAry = dataAry.concat(items)
+                        } else {
+                            obj.msg = 'findprice parse failed.'
+                        }
+                    }
+                    done()
+                    resolve()
+                }
+            }]);
+        });
+
+        Promise.all([feebee, ezprice, findprice]).then(() => {
             var o = {}, i, s, k, z = 0;
             for(i in dataAry) {
                 s = dataAry[i].price.split('~');
