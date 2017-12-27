@@ -9,7 +9,10 @@ const crawlerParse = require('./lib/crawlerParse')
 app.use(compression())
 
 //static
-app.use('/static', express.static(__dirname + '/public'))
+var staticOptions = {
+    maxAge: '1h'
+}
+app.use('/static', express.static(__dirname + '/public', staticOptions))
 
 const c = new Crawler({
     maxConnections: 10,
