@@ -55,8 +55,9 @@ function crawlerParse(platform, data) {
                 if (h4) {
                     productName = striptags(h4.innerHTML);
                     price = (lis[i].querySelector('.price')) ? striptags(lis[i].querySelector('.price').innerHTML) : '';
-                    if (price.match(/(\d*?,?\d{3})/g)) {
-                        price = price.match(/(\d*?,?\d{3})/g)[0]
+                    var rep =price.match(/(\d*?,?\d{1,3})/i)
+                    if (rep) {
+                        price = rep[0]
                     }
 
                     if (lis[i].querySelector(platDOM[platform].shop)) {
