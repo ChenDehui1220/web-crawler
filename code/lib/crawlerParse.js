@@ -48,23 +48,27 @@ function crawlerParse(platform, data) {
 
         for (var i in lis) {
             if (typeof lis[i] === 'object') {
-                h4 = (['feebee', 'ezprice'].indexOf(platform) !== -1) ? lis[i].querySelector('h4') : lis[i].querySelector('.gname')
+                h4 = (['feebee', 'ezprice'].indexOf(platform) !== -1)
+                    ? lis[i].querySelector('h4')
+                    : lis[i].querySelector('.gname')
+
                 if (h4) {
-                    productName = h4.innerHTML;
-                    price = (lis[i].querySelector('.price')) ? lis[i].querySelector('.price').innerHTML : '';
+                    productName = striptags(h4.innerHTML);
+                    price = (lis[i].querySelector('.price')) ? striptags(lis[i].querySelector('.price').innerHTML) : '';
+                    price = price.match(/(\d*?,?\d{3})/g)[0]
 
                     if (lis[i].querySelector(platDOM[platform].shop)) {
-                        shop = lis[i].querySelector(platDOM[platform].shop).innerHTML;
+                        shop = striptags(lis[i].querySelector(platDOM[platform].shop).innerHTML);
                     }
 
                     if (obj.keys.indexOf(productName) === -1) {
                         obj.items.push({
-                            name: striptags(productName),
-                            price: striptags(price).replace(/(\$|&nbsp;)/g,''),
-                            shop: striptags(shop),
+                            name: productName,
+                            price: price,
+                            shop: shop,
                             platform: platform
                         });
-                        obj.keys.push(striptags(productName));
+                        obj.keys.push(productName);
                     }
                 }
             }

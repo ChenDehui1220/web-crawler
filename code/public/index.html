@@ -15,26 +15,20 @@
 
 <body>
     <div class="container">
-        <div class="">
-            <form>
-                <div class="form-group">
-                    <label for="keyword"></label>
-                    <input type="text" class="form-control" id="keyword" aria-describedby="emailHelp" placeholder="請輸入預查商品名稱" autocomplete="true">
-                </div>
+        <form class="">
+            <div class="form-group">
+                <label for="keyword"></label>
+                <input type="text" class="form-control" id="keyword" aria-describedby="emailHelp" placeholder="請輸入預查商品名稱" autocomplete="true">
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
 
-                <p>
-                    <label for="amount">Price range:</label>
-                    <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
-                </p>
+        <p></p>
 
-                <div id="slider-range"></div>
-
-                <br>
-                <p>
-                    <button type="submit" class="btn btn-primary">Search</button>
-                </p>
-            </form>
-        </div>
+        <div id="slider-range"></div>
+        <label for="amount">Price range:</label>
+        <input type="text" id="amount" readonly style="border:0; color:#f6931f; font-weight:bold;">
+        </p>
 
         <br>
 
@@ -43,7 +37,7 @@
 
     <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
         crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"></script>
     <script src="./static/index.js"></script>
 </body>
 

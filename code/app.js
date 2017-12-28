@@ -106,7 +106,9 @@ app.get('/query', function (request, response) {
             var o = {}, i, s, k, z = 0;
             for(i in dataAry) {
                 s = dataAry[i].price.split('~');
-                k = Number(s[0].replace(/(\$|,|～|\s)/g,'')) + z;
+                s[0] = s[0].replace(/(\$|,|～|\s)/g,'');
+                s[0] = s[0].replace(/(\D)/g,'')
+                k = Number(s[0]) + z;
                 o[k] = dataAry[i];
                 z++
             }

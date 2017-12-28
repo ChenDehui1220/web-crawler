@@ -2,9 +2,31 @@
     var gData = {};
     var sortPrice = 'low'; // low or high
     var $Slider = $('#slider-range');
+    var $Keyword = $('#keyword');
     var rangeMin = 0;
-    var rangeMax = 50000;
+    var rangeMax = 120000;
     var rangeTop = 120000;
+
+    var amountNotice = function(min, max) {
+        $('#amount').val('$' + min + ' - $' + max);
+    };
+
+    var setSliderRange = function() {
+        var data = gData;
+        var dataMinPrice = 0,
+            dataMaxPrice = 0;
+
+        for (var i in data) {
+            if (dataMinPrice === 0) {
+                dataMinPrice = parseInt(data[i].price.replace(/,/g, ''));
+            }
+            dataMaxPrice = parseInt(data[i].price.replace(/,/g, ''));
+        }
+
+        $Slider.slider('option', 'min', dataMinPrice);
+        $Slider.slider('option', 'max', dataMaxPrice);
+        amountNotice(dataMinPrice, dataMaxPrice);
+    };
 
     var parse = function() {
         var data = gData;
@@ -13,11 +35,12 @@
         var max = range[1];
         var output =
             '<table class="table table-striped"> <thead> <tr> <th>Product</th> <th class="sortPrice">Price</th> <th>Shop</th> <th>Platform</th> </tr></thead> <tbody>';
-        var priceAry = [], dataprice = 0;
+        var priceAry = [],
+            dataprice = 0;
 
         for (var i in data) {
             priceAry = data[i].price.split('~');
-            dataprice = parseInt(priceAry[0].replace(/(\s|,)/g,''))
+            dataprice = parseInt(priceAry[0].replace(/(\s|,)/g, ''));
 
             if (min <= dataprice && dataprice <= max) {
                 output +=
@@ -38,8 +61,7 @@
     };
 
     var fetch = function() {
-        var $dom = $('#keyword');
-        var ky = $dom.val();
+        var ky = $Keyword.val();
         var results = $('#results');
 
         if (ky === '') {
@@ -51,6 +73,9 @@
         $.getJSON('/query?keyword=' + ky, function(obj) {
             gData = obj.data;
             parse();
+            setSliderRange();
+
+            window.localStorage.setItem('keyword', ky);
 
             if (obj.msg !== undefined) {
                 console.log(obj.msg);
@@ -59,6 +84,11 @@
     };
 
     $(document).ready(function() {
+
+        if (window.localStorage.getItem('keyword')) {
+            $Keyword.val(window.localStorage.getItem('keyword'));
+        }
+
         $('button').on('click', function(e) {
             e.preventDefault();
             fetch();
@@ -74,14 +104,12 @@
             max: rangeTop,
             values: [rangeMin, rangeMax],
             slide: function(event, ui) {
-                $('#amount').val('$' + ui.values[0] + ' - $' + ui.values[1]);
+                amountNotice(ui.values[0], ui.values[1]);
             },
             stop: function() {
                 parse();
             }
         });
-        $('#amount').val(
-            '$' + $Slider.slider('values', 0) + ' - $' + $Slider.slider('values', 1)
-        );
+        amountNotice(rangeMin, rangeMax);
     });
 })();
