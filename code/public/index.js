@@ -66,7 +66,7 @@
 
         if (ky === '') {
             results.html('');
-            $dom.focus();
+            $Keyword.focus();
             return false;
         }
 
