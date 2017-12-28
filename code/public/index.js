@@ -72,8 +72,8 @@
 
         $.getJSON('/query?keyword=' + ky, function(obj) {
             gData = obj.data;
-            parse();
             setSliderRange();
+            parse();
 
             window.localStorage.setItem('keyword', ky);
 
