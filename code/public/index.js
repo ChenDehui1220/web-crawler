@@ -34,7 +34,7 @@
         var min = range[0];
         var max = range[1];
         var output =
-            '<table class="table table-striped"> <thead> <tr> <th>Product</th> <th class="sortPrice">Price</th> <th>Shop</th> <th>Platform</th> </tr></thead> <tbody>';
+            '<table class="table table-striped"> <thead> <tr> <th>Product</th> <th class="sortPrice">Price</th> <th>Shop</th> <th>Platform</th> <th>Similar</th></tr></thead> <tbody>';
         var priceAry = [],
             dataprice = 0;
 
@@ -52,7 +52,9 @@
                     data[i].shop +
                     '</td><td>' +
                     data[i].platform +
-                    '</td></tr>';
+                    '</td><td>' +
+                    data[i].similar +
+                    '%</td></tr>';
             }
         }
 

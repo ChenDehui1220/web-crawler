@@ -4,6 +4,7 @@ const Crawler = require('crawler')
 const compression = require('compression')
 const Promise = require('promise')
 const crawlerParse = require('./lib/crawlerParse')
+const stringSimilarity = require('string-similarity')
 
 //middleware
 app.use(compression())
@@ -102,24 +103,33 @@ app.get('/query', function (request, response) {
             }]);
         });
 
+        let findSimilarRate = function(obj) {
+            for(var i in obj) {
+                obj[i].similar = parseInt(stringSimilarity.compareTwoStrings(searchKeyword, obj[i].name)*100)
+            }
+            return obj
+        }
+
+        //[feebee, ezprice, findprice]
         Promise.all([feebee, ezprice, findprice]).then(() => {
-            var o = {}, i, s, k, z = 0;
+            var o = {}, i, s, k, z = 0
             for(i in dataAry) {
-                s = dataAry[i].price.split('~');
-                s[0] = s[0].replace(/(\$|,|～|\s)/g,'');
+                s = dataAry[i].price.split('~')
+                s[0] = s[0].replace(/(\$|,|～|\s)/g,'')
                 s[0] = s[0].replace(/(\D)/g,'')
-                k = Number(s[0]) + z;
-                o[k] = dataAry[i];
+                k = Number(s[0]) + z
+                o[k] = dataAry[i]
                 z++
             }
-            obj.data = o;
-            response.status(200).send(JSON.stringify(obj));
+
+            obj.data = findSimilarRate(o)
+            response.status(200).send(JSON.stringify(obj))
         }).catch(() => {
-            response.status(400).send(JSON.stringify(obj));
-        });
+            response.status(400).send(JSON.stringify(obj))
+        })
     } else {
         obj.msg = 'please provide search word. ex: /query?keyword=dyson v6'
-        response.status(400).send(JSON.stringify(obj));
+        response.status(400).send(JSON.stringify(obj))
     }
 })
 
