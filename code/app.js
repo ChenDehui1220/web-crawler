@@ -4,7 +4,9 @@ const Crawler = require('crawler')
 const compression = require('compression')
 const Promise = require('promise')
 const crawlerParse = require('./lib/crawlerParse')
-const stringSimilarity = require('string-similarity')
+const levenshtein = require('./lib/levenshtein')
+
+
 
 //middleware
 app.use(compression())
@@ -27,6 +29,7 @@ app.get('/', function (request, response) {
 app.get('/query', function (request, response) {
     var obj = {}, nameAry = [], dataAry = [];
     var searchKeyword = request.query.keyword;
+    var searchKeywordEncode = encodeURI(searchKeyword)
 
     response.set('Access-Control-Allow-Headers', 'Content-Type');
     response.set('Access-Control-Allow-Methods', 'GET');
@@ -35,12 +38,11 @@ app.get('/query', function (request, response) {
     response.set('Cache-Control', 'public, no-store');
 
     if (typeof searchKeyword === 'string' && searchKeyword.length > 0) {
-        searchKeyword = encodeURI(searchKeyword)
 
         //feebee
         const feebee = new Promise((resolve, reject) => {
             c.queue([{
-                uri: 'http://m.feebee.com.tw/s/?q=' + searchKeyword,
+                uri: 'http://m.feebee.com.tw/s/?q=' + searchKeywordEncode,
                 jQuery: false,
                 callback: function (error, res, done) {
                     if (error) {
@@ -62,7 +64,7 @@ app.get('/query', function (request, response) {
         //ezprice
         const ezprice = new Promise((resolve, reject) => {
             c.queue([{
-                uri: 'https://m.ezprice.com.tw/s/' + searchKeyword + '/',
+                uri: 'https://m.ezprice.com.tw/s/' + searchKeywordEncode + '/',
                 jQuery: false,
                 callback: function (error, res, done) {
                     if (error) {
@@ -84,7 +86,7 @@ app.get('/query', function (request, response) {
         //findprice
         const findprice = new Promise((resolve, reject) => {
             c.queue([{
-                uri: 'https://m.findprice.com.tw/datalist.aspx?q=' + searchKeyword,
+                uri: 'https://m.findprice.com.tw/datalist.aspx?q=' + searchKeywordEncode,
                 jQuery: false,
                 callback: function (error, res, done) {
                     if (error) {
@@ -105,7 +107,7 @@ app.get('/query', function (request, response) {
 
         let findSimilarRate = function(obj) {
             for(var i in obj) {
-                obj[i].similar = parseInt(stringSimilarity.compareTwoStrings(searchKeyword, obj[i].name)*100)
+                obj[i].similar = levenshtein(searchKeyword, obj[i].name)
             }
             return obj
         }
