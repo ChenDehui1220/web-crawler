@@ -1,3 +1,7 @@
 .sortPrice {
     cursor: pointer;
 }
+.sortPrice img {
+    width: 20px;
+    margin-left: 5px;
+}

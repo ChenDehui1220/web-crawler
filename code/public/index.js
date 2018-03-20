@@ -34,7 +34,7 @@
         var min = range[0];
         var max = range[1];
         var output =
-            '<table class="table table-striped"> <thead> <tr> <th>Product</th> <th class="sortPrice">Price</th> <th>Shop</th> <th>Platform</th> <th>Similar</th></tr></thead> <tbody>';
+            '<table class="table table-striped"> <thead> <tr> <th>Product</th> <th class="sortPrice"><font>Price</font><img src="./static/sort.png"/></th> <th>Shop</th> <th>Platform</th> <th>Similar</th></tr></thead> <tbody>';
         var priceAry = [],
             dataprice = 0;
 
@@ -45,7 +45,9 @@
             if (min <= dataprice && dataprice <= max) {
                 output +=
                     '<tr> <td>' +
-                    data[i].name +
+                    ((data[i].hyperlink !== '')
+                    ? '<a href="' + data[i].hyperlink + '" target="_blank">' + data[i].name + '</a>'
+                    : data[i].name) +
                     '</td><td>' +
                     data[i].price +
                     '</td><td>' +

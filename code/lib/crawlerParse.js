@@ -4,7 +4,7 @@ const {
     JSDOM
 } = jsdom
 
-function crawlerParse(platform, data) {
+function crawlerParse(platform, data, domain) {
     const obj = {
         next: false,
         fail: false,
@@ -44,6 +44,7 @@ function crawlerParse(platform, data) {
         let productName = '',
             price = '',
             shop = '',
+            hyperlink = '',
             h4
 
         for (var i in lis) {
@@ -53,6 +54,16 @@ function crawlerParse(platform, data) {
                     : lis[i].querySelector('.gname')
 
                 if (h4) {
+                    if (lis[i].querySelector('a')) {
+                        let href = lis[i].querySelector('a').getAttribute('href')
+                        if (/^(https|http|url\.aspx)/i.test(href)) {
+                            hyperlink = href
+                            if (/url\.aspx/i.test(hyperlink)) {
+                                hyperlink = domain + hyperlink
+                            }
+                        }
+                    }
+
                     productName = striptags(h4.innerHTML);
                     price = (lis[i].querySelector('.price')) ? striptags(lis[i].querySelector('.price').innerHTML) : '';
 
@@ -70,7 +81,8 @@ function crawlerParse(platform, data) {
                             name: productName,
                             price: price,
                             shop: shop,
-                            platform: platform
+                            platform: platform,
+                            hyperlink: hyperlink
                         });
                         obj.keys.push(productName);
                     }

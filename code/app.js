@@ -48,7 +48,7 @@ app.get('/query', function (request, response) {
                     if (error) {
                         obj.msg = 'feebee not response!'
                     } else {
-                        const { next, fail, keys, items } = crawlerParse('feebee', res)
+                        const { next, fail, keys, items } = crawlerParse('feebee', res, 'http://m.feebee.com.tw/')
                         if (next === true) {
                             dataAry = dataAry.concat(items)
                         } else {
@@ -70,7 +70,7 @@ app.get('/query', function (request, response) {
                     if (error) {
                         obj.msg = 'ezprice not response!'
                     } else {
-                        const { next, fail, keys, items } = crawlerParse('ezprice', res)
+                        const { next, fail, keys, items } = crawlerParse('ezprice', res, 'https://m.ezprice.com.tw/')
                         if (next === true) {
                             dataAry = dataAry.concat(items)
                         } else {
@@ -92,7 +92,7 @@ app.get('/query', function (request, response) {
                     if (error) {
                         obj.msg = 'findprice not response!'
                     } else {
-                        const { next, fail, keys, items } = crawlerParse('findprice', res)
+                        const { next, fail, keys, items } = crawlerParse('findprice', res, 'https://m.findprice.com.tw/')
                         if (next === true) {
                             dataAry = dataAry.concat(items)
                         } else {
@@ -135,6 +135,6 @@ app.get('/query', function (request, response) {
     }
 })
 
-app.listen(3000, function () {
+app.listen(4090, function () {
     console.log('Starting web crawler service!!!');
 })
