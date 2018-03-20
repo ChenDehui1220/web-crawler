@@ -135,6 +135,6 @@ app.get('/query', function (request, response) {
     }
 })
 
-app.listen(4090, function () {
+app.listen(3000, function () {
     console.log('Starting web crawler service!!!');
 })
